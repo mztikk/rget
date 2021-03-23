@@ -55,12 +55,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // let args: Vec<String> = env::args().skip(1).collect();
     let args = Cli::from_args();
 
-    let uri_arg = args.uri;
-
-    let uri = if !uri_arg.starts_with("http://") && !uri_arg.starts_with("https://") {
-        format!("http://{}", uri_arg)
+    let uri = if !args.uri.starts_with("http://") && !args.uri.starts_with("https://") {
+        format!("http://{}", args.uri)
     } else {
-        uri_arg.to_string()
+        args.uri.to_string()
     };
 
     println!("Sending request to '{}'", &uri);
