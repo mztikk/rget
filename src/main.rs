@@ -90,7 +90,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let pb = ProgressBar::new(n_bytes);
             // pb.set_style(ProgressStyle::default_bar().template("{spinner:.green} [{elapsed_precise}] [{wide_bar.cyan/blue}] {bytes}/{total_bytes} ({eta})").progress_chars("#>-"));
             pb.set_style(ProgressStyle::default_bar()
-                .template("{msg}{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})")
+                .template("{msg}{spinner:.green} [{elapsed_precise}] [{bar:40.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
                 .progress_chars("#>-"));
 
             std::io::copy(&mut resp, &mut pb.wrap_write(&mut file))?;
