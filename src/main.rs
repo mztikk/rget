@@ -52,7 +52,6 @@ fn write_line(str: String) {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // let args: Vec<String> = env::args().skip(1).collect();
     let args = Cli::from_args();
 
     let uri = if !args.uri.starts_with("http://") && !args.uri.starts_with("https://") {
@@ -66,21 +65,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(mut resp) => {
             let filename_getters = [filename_from_headers, filename_from_uri];
 
-            let filename = args.filename.unwrap_or(
+            let filename = args.filename.unwrap_or_else(|| {
                 filename_getters
                     .iter()
                     .find_map(|f| f(&resp).map_err(write_line).ok())
-                    .unwrap_or("index.html".to_string()),
-            );
+                    .unwrap_or_else(|| "index.html".to_string())
+            });
 
             println!("Filename set to: '{}'", filename);
 
             let mut file = File::create(filename)?;
 
-            let n_bytes = match resp.content_length() {
-                Some(content_length) => content_length,
-                None => 0,
-            };
+            let n_bytes = resp.content_length().unwrap_or(0);
             if n_bytes != 0 {
                 println!("Download size is: {}", HumanBytes(n_bytes));
             } else {
